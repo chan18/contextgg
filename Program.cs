@@ -10,58 +10,58 @@ namespace interview
         Match match;
         public int numberOfTeams;
 
+        public List<PlayerDetails> players;
+
         public Program(int numberOfteams = 2)
         {
             match = new Match();
             numberOfTeams = numberOfteams;
+            players = new List<PlayerDetails>();
         }
 
         static void Main(string[] args)
-        {       
-         
+        {
+            Program program = new Program(2);
+
             var lorem = new Bogus.DataSets.Lorem("en");            
             var testUser = new Faker<PlayerDetails>()
                                 .StrictMode(true)
                                 .RuleFor(o => o.UserName, f => lorem.Word())
                                 .RuleFor(o => o.Rating, f => f.Random.Number(300,3000));
-           var players =  testUser.Generate(6);
 
-           Program program = new Program(2);
+           program.players =  testUser.Generate(6);
 
-           // sorting
-            players  = players.OrderBy(x => x.Rating).ToList();
+           program.players  = program.players.OrderBy(x => x.Rating).ToList();
 
-            for (int i = 0; i < program.numberOfTeams; i++)
-            {
-                program.match.teams.Add(BuildTeam(players,program.numberOfTeams-i));
-            }
+           for (int i = 0; i < program.numberOfTeams; i++)
+           {
+               program.match.teams.Add(BuildTeam(program,program.numberOfTeams - i));
+           }
 
-            Console.WriteLine(program.match);
+           Console.WriteLine(program.match);
         }
 
-        static List<PlayerDetails> BuildTeam(List<PlayerDetails> players,int numberOfTeams) 
+        static List<PlayerDetails> BuildTeam(Program program,int numberOfTeams) 
         {
             List<PlayerDetails> temp = new List<PlayerDetails>();
-            var numberOfplayersPerTeam = players.Count/numberOfTeams;
+            var numberOfplayersPerTeam = program.players.Count/numberOfTeams;
 
-            foreach (var item in players.ToList())
+            for (int index = 0; index < program.players.Count; index++)
             {
-                var index = players.IndexOf(item);
-
-                if (numberOfplayersPerTeam == index)
+                if (numberOfplayersPerTeam ==  (index + 1))
                 {
                     return temp;
                 }
 
-                if (players.ElementAtOrDefault(index) != null)
+                if (program.players.ElementAtOrDefault(index) != null)
                 {
-                    temp.Add(item);
-                    players.RemoveAt(index);
+                    temp.Add(program.players[index]);
+                    program.players.RemoveAt(index);
 
-                    if (players.ElementAtOrDefault(players.Count() - 1) != null)
+                    if (program.players.ElementAtOrDefault(program.players.Count() - 1) != null)
                     {
-                        temp.Add(players.ElementAt(players.Count() - 1));
-                        players.RemoveAt(players.Count() - 1);
+                        temp.Add(program.players[program.players.Count() - 1]);
+                        program.players.RemoveAt(program.players.Count() - 1);
                     }
                 }
             }
