@@ -85,7 +85,7 @@ namespace interview
                     temp.Add(program.players[index]);
                 }
 
-                program.players = new List<PlayerDetails>();;
+                program.players = new List<PlayerDetails>();
             }
 
             return temp;
